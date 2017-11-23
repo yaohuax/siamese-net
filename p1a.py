@@ -24,18 +24,18 @@ import os
 import re
 
 # Helper Functions
-def imshow(img,text,should_save=False):
-    npimg = img.numpy()
-    plt.axis("off")
-    if text:
-        plt.text(75, 8, text, style='italic',fontweight='bold',
-            bbox={'facecolor':'white', 'alpha':0.8, 'pad':10})
-    plt.imshow(np.transpose(npimg, (1, 2, 0)))
-    plt.show()    
-
-def show_plot(iteration,loss):
-    plt.plot(iteration,loss)
-    plt.show()
+#def imshow(img,text,should_save=False):
+#    npimg = img.numpy()
+#    plt.axis("off")
+#    if text:
+#        plt.text(75, 8, text, style='italic',fontweight='bold',
+#            bbox={'facecolor':'white', 'alpha':0.8, 'pad':10})
+#    plt.imshow(np.transpose(npimg, (1, 2, 0)))
+#    plt.show()    
+#
+#def show_plot(iteration,loss):
+#    plt.plot(iteration,loss)
+#    plt.show()
 
 # To Generate train/test List    
 def ls(root, mode):
@@ -59,7 +59,7 @@ def ls(root, mode):
 
 #Configuration Class
 class Config():
-    training_dir = "/Users/yaohuaxu/Desktop/lfw"
+    training_dir = "/home/yaohuaxu1/siamese-net/lfw/"
     batch_size = 64
     train_number_epochs = 25
     
@@ -176,7 +176,7 @@ testloader = DataLoader(testDataset, batch_size = Config.batch_size, shuffle = F
 
 net = Net().cuda()
 criterion = nn.BCELoss()
-optimizer = optim.Adam(net.parameters(), lr = 0.005)
+optimizer = optim.Adam(net.parameters(), lr = 0.00001)
 counter = []
 loss_history = []
 iteration_number = 0
@@ -202,7 +202,7 @@ for epoch in range(Config.train_number_epochs):
             iteration_number +=10
             counter.append(iteration_number)
             loss_history.append(loss.data[0])
-show_plot(counter,loss_history)
+#show_plot(counter,loss_history)
 
 #Save Model
 torch.save(net.state_dict(), f='p1a model')
