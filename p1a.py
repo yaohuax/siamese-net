@@ -61,7 +61,7 @@ def ls(root, mode):
 class Config():
     training_dir = "/home/yaohuaxu1/siamese-net/lfw/"
     batch_size = 64
-    train_number_epochs = 30
+    train_number_epochs = 3
     
 #Custom Dataset
 class LFWDataset(Dataset):
@@ -233,5 +233,5 @@ for _, data in enumerate(testloader,0):
     output = torch.round(output)
     total += label.size(0)
     correct += (output == label).sum()
-print('Accuracy of the network on the test images: %d %%' % (
-      100 * correct / total))         
+print('Accuracy of the network on the test images: %d %%' % ((
+      100 * correct / total)).data.numpy())         
