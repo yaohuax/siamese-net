@@ -43,7 +43,7 @@ def ls(root, mode):
     return result
 
 class Config():
-    training_dir = "/Users/yaohuaxu/Desktop/lfw"
+    training_dir = "/home/yaohuaxu1/siamese-net/lfw/"
     batch_size = 64
     train_number_epochs = 30
     
