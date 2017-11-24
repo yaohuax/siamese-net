@@ -45,7 +45,7 @@ def ls(root, mode):
 class Config():
     training_dir = "/home/yaohuaxu1/siamese-net/lfw/"
     batch_size = 64
-    train_number_epochs = 2
+    train_number_epochs = 30
     
 class LFWDataset(Dataset):
     
@@ -223,4 +223,4 @@ correct = correct.data.numpy().astype(np.float)
 acc = (100 * correct / total)
 print correct
 print total
-print('Accuracy of the network on the train images: %f %%' % acc)
+print('Accuracy of the network on the test images: %f %%' % acc)
