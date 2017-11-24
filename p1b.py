@@ -200,7 +200,7 @@ for _, data in enumerate(trainloader,0):
     total += label.size(0)
     pred = (euclidean_distance < thresh)
     #print pred
-    correct += ((label == pred).sum()).type('LongTensor')
+    correct += ((label == pred).sum()).type('torch.LongTensor')
 correct = correct.data.numpy().astype(np.float)
 acc = (100 * correct / total)
 print correct
@@ -218,7 +218,7 @@ for _, data in enumerate(trainloader,0):
     #print euclidean_distance
     total += label.size(0)
     pred = (euclidean_distance < thresh)
-    correct += (label == pred).sum()
+    correct += ((label == pred).sum()).type('torch.LongTensor')
 correct = correct.data.numpy().astype(np.float)
 acc = (100 * correct / total)
 print correct
