@@ -218,7 +218,7 @@ print('Accuracy of the network on the train images: %f %%' % acc)
 
 total = 0
 correct = 0
-for _, data in enumerate(trainloader,0):
+for _, data in enumerate(testloader,0):
     img0, img1, label = data
     label = label.type(torch.ByteTensor)
     img0, img1, label = Variable(img0, volatile = True).cuda(), Variable(img1, volatile = True).cuda(), Variable(label).cuda()
