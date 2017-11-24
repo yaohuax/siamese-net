@@ -235,4 +235,5 @@ for _, data in enumerate(testloader,0):
     label = label.type('torch.LongTensor')
     total += label.size(0)
     correct += (output == label).sum()
-print('Accuracy of the network on the test images: %d %%' % (100 * correct / total).data.numpy())         
+    acc = (100 * correct / total).data.numpy()
+print('Accuracy of the network on the test images: %d %%' % acc)         
