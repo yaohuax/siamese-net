@@ -222,7 +222,7 @@ for _, data in enumerate(trainloader,0):
     total += label.size(0)
     correct += (output == label).sum()
 print('Accuracy of the network on the train images: %d %%' % (
-      100 * correct / total))    
+      100 * correct / total).data.numpy())    
 
 total = 0
 correct = 0
