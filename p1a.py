@@ -215,7 +215,7 @@ correct = 0
 for _, data in enumerate(trainloader,0):
     img0, img1, label = data
     label = label.type(torch.FloatTensor)
-    img0, img1, label = Variable(img0).cuda(), Variable(img1).cuda(), Variable(label).cuda()
+    img0, img1, label = Variable(img0, volatile = True).cuda(), Variable(img1, volatile = True).cuda(), Variable(label).cuda()
     output = net.forward(img0, img1)
     output = torch.round(output)
     total += label.size(0)
@@ -228,7 +228,7 @@ correct = 0
 for _, data in enumerate(testloader,0):
     img0, img1, label = data
     label = label.type(torch.FloatTensor)
-    img0, img1, label = Variable(img0).cuda(), Variable(img1).cuda(), Variable(label).cuda()
+    img0, img1, label = Variable(img0, volatile = True).cuda(), Variable(img1, volatile = True).cuda(), Variable(label).cuda()
     output = net.forward(img0, img1)
     output = torch.round(output)
     total += label.size(0)
