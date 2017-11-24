@@ -205,10 +205,10 @@ for epoch in range(Config.train_number_epochs):
 #show_plot(counter,loss_history)
 
 #Save Model
-torch.save(net.state_dict(), f='p1a model')
+#torch.save(net.state_dict(), f='p1a model')
 
 #Test
-net.load_state_dict(torch.load(f='p1a model'))
+#net.load_state_dict(torch.load(f='p1a model'))
 
 total = 0
 correct = 0
