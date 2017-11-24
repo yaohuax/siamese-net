@@ -239,6 +239,7 @@ for _, data in enumerate(testloader,0):
     label = label.type('torch.LongTensor')
     print label.size(0)
     total += label.size(0)
+    print total
     correct += (output == label).sum()
     acc = (100 * correct / total).data.numpy()
 correct = correct.data.numpy().astype(np.float)
