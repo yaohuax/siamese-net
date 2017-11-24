@@ -45,7 +45,7 @@ def ls(root, mode):
 class Config():
     training_dir = "/home/yaohuaxu1/siamese-net/lfw/"
     batch_size = 64
-    train_number_epochs = 30
+    train_number_epochs = 2
     
 class LFWDataset(Dataset):
     
@@ -170,6 +170,7 @@ iteration_number = 0
 for epoch in range(Config.train_number_epochs):
     for i, data in enumerate(trainloader, 0):
         img0, img1, label = data
+        label = label.type(torch.FloatTensor)
         img0, img1, label = Variable(img0).cuda(), Variable(img1).cuda(), Variable(label).cuda()
         output1, output2 = net.forward(img0, img1)
         optimizer.zero_grad()
