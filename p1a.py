@@ -223,6 +223,7 @@ for _, data in enumerate(trainloader,0):
     correct += (output == label).sum()
 correct = correct.data.numpy().astype(np.float)
 acc = (100 * correct / total)
+print correct
 print total
 print('Accuracy of the network on the train images: %d %%' % acc)      
 
