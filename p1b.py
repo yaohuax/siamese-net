@@ -45,7 +45,7 @@ def ls(root, mode):
 class Config():
     training_dir = "/home/yaohuaxu1/siamese-net/lfw/"
     batch_size = 64
-    train_number_epochs = 30
+    train_number_epochs = 45
     
 class LFWDataset(Dataset):
     
@@ -161,7 +161,7 @@ class ContrastiveLoss(torch.nn.Module):
 trainloader = DataLoader(lfwDataset, batch_size = Config.batch_size, shuffle = True)
 net = Net().cuda()
 criterion = ContrastiveLoss()
-optimizer = optim.Adam(net.parameters(), lr = 0.005)
+optimizer = optim.Adam(net.parameters(), lr = 0.002)
 
 counter = []
 loss_history = []
