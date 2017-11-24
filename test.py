@@ -218,10 +218,11 @@ for  _, data in enumerate(trainloader,0):
     print label
     img0, img1, label = Variable(img0, volatile = True).cuda(), Variable(img1, volatile = True).cuda(), Variable(label).cuda()
     output = net.forward(img0, img1)
-    print output
     output = (torch.round(output)).type('torch.LongTensor')
+    print output
     label = label.type('torch.LongTensor')
     total += label.size(0)
+    print (output == label).sum()
     correct += (output == label).sum()
 correct = correct.data.numpy().astype(np.float)
 acc = (100 * correct / total)
