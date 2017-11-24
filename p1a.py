@@ -230,12 +230,14 @@ net.load_state_dict(torch.load(f='p1a model'))
 total = 0
 correct = 0
 for _, data in enumerate(testloader,0):
+    print 'aaa'
     img0, img1, label = data
     label = label.type(torch.FloatTensor)
     img0, img1, label = Variable(img0, volatile = True).cuda(), Variable(img1, volatile = True).cuda(), Variable(label).cuda()
     output = net.forward(img0, img1)
     output = (torch.round(output)).type('torch.LongTensor')
     label = label.type('torch.LongTensor')
+    print label.size(0)
     total += label.size(0)
     correct += (output == label).sum()
     acc = (100 * correct / total).data.numpy()
