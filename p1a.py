@@ -210,22 +210,22 @@ torch.save(net.state_dict(), f='p1a model')
 #Test
 net.load_state_dict(torch.load(f='p1a model'))
 
-total = 0
-correct = 0
-for _, data in enumerate(trainloader,0):
-    img0, img1, label = data
-    label = label.type(torch.FloatTensor)
-    img0, img1, label = Variable(img0, volatile = True).cuda(), Variable(img1, volatile = True).cuda(), Variable(label).cuda()
-    output = net.forward(img0, img1)
-    output = (torch.round(output)).type('torch.LongTensor')
-    label = label.type('torch.LongTensor')
-    total += label.size(0)
-    correct += (output == label).sum()
-correct = correct.data.numpy().astype(np.float)
-acc = (100 * correct / total)
-print correct
-print total
-print('Accuracy of the network on the train images: %d %%' % acc)      
+#total = 0
+#correct = 0
+#for _, data in enumerate(trainloader,0):
+#    img0, img1, label = data
+#    label = label.type(torch.FloatTensor)
+#    img0, img1, label = Variable(img0, volatile = True).cuda(), Variable(img1, volatile = True).cuda(), Variable(label).cuda()
+#    output = net.forward(img0, img1)
+#    output = (torch.round(output)).type('torch.LongTensor')
+#    label = label.type('torch.LongTensor')
+#    total += label.size(0)
+#    correct += (output == label).sum()
+#correct = correct.data.numpy().astype(np.float)
+#acc = (100 * correct / total)
+#print correct
+#print total
+#print('Accuracy of the network on the train images: %d %%' % acc)      
 
 total = 0
 correct = 0
