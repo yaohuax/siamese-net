@@ -243,5 +243,5 @@ correct = correct.data.numpy().astype(np.float)
 acc = (100 * correct / total)
 print total
 print correct
-#print('Accuracy of the network on the train images: %f %%' % acc)      
+print('Accuracy of the network on the train images: %f %%' % acc)      
          
