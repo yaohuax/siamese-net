@@ -242,5 +242,6 @@ for _, data in enumerate(testloader,0):
 correct = correct.data.numpy().astype(np.float)
 acc = (100 * correct / total)
 print total
+print correct
 print('Accuracy of the network on the train images: %d %%' % acc)      
          
