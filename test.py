@@ -212,9 +212,7 @@ net.load_state_dict(torch.load(f='p1a model'))
 
 total = 0
 correct = 0
-for i in range(10):
-    dataiter = iter(trainloader)
-    data = next(dataiter)
+for  _, data in enumerate(trainloader,0):
     img0, img1, label = data
     label = label.type(torch.FloatTensor)
     print label
