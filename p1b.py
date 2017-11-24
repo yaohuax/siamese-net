@@ -188,9 +188,6 @@ net.load_state_dict(torch.load(f='p1b model'))
 thresh = 1.9
 total = 0
 correct = 0
-thresh = 25
-total = 0
-correct = 0
 for _, data in enumerate(trainloader,0):
     img0, img1, label = data
     label = label.type(torch.ByteTensor)
@@ -209,6 +206,8 @@ print correct
 print total
 print('Accuracy of the network on the train images: %f %%' % acc)
 
+total = 0
+correct = 0
 for _, data in enumerate(trainloader,0):
     img0, img1, label = data
     label = label.type(torch.ByteTensor)
