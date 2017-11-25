@@ -44,7 +44,7 @@ def ls(root, mode):
 
 class Config():
     training_dir = "/home/yaohuaxu1/siamese-net/lfw/"
-    batch_size = 64
+    batch_size = 16
     train_number_epochs = 100
     
 class LFWDataset(Dataset):
@@ -186,7 +186,7 @@ for epoch in range(Config.train_number_epochs):
 torch.save(net.state_dict(), f='p1b model')
 net.load_state_dict(torch.load(f='p1b model'))
 
-thresh = 1.9
+thresh = 0.6
 total = 0
 correct = 0
 for _, data in enumerate(trainloader,0):
