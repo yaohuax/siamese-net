@@ -169,7 +169,7 @@ class ContrastiveLoss(torch.nn.Module):
 trainloader = DataLoader(lfwDataset, batch_size = Config.batch_size, shuffle = True)
 net = Net().cuda()
 criterion = ContrastiveLoss()
-optimizer = optim.Adam(net.parameters(), lr = 0.002)
+optimizer = optim.Adam(net.parameters(), lr = 0.0001)
 
 counter = []
 loss_history = []
@@ -216,7 +216,7 @@ print correct
 print total
 print('Accuracy of the network on the train images: %f %%' % acc)
 
-thresh = 1.5
+#thresh = 1.5
 total = 0
 correct = 0
 for _, data in enumerate(testloader,0):
