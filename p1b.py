@@ -161,7 +161,7 @@ class ContrastiveLoss(torch.nn.Module):
 trainloader = DataLoader(lfwDataset, batch_size = Config.batch_size, shuffle = True)
 net = Net().cuda()
 criterion = ContrastiveLoss()
-optimizer = optim.Adam(net.parameters(), lr = 0.0001)
+optimizer = optim.Adam(net.parameters(), lr = 0.00001)
 
 counter = []
 loss_history = []
