@@ -200,15 +200,15 @@ correct = 0
 for _, data in enumerate(trainloader,0):
     img0, img1, label = data
     label = label.type(torch.ByteTensor)
-    print label
+    #print label
     img0, img1, label = Variable(img0, volatile = True).cuda(), Variable(img1, volatile = True).cuda(), Variable(label).cuda()
     output1, output2 = net.forward(img0, img1)
     euclidean_distance = F.pairwise_distance(output1, output2)
-    print euclidean_distance
+    #print euclidean_distance
     total += label.size(0)
     pred = (euclidean_distance < thresh)
     #print pred
-    print (label == pred).sum()
+    #print (label == pred).sum()
     correct += ((label == pred).sum()).type('torch.LongTensor')
 correct = correct.data.numpy().astype(np.float)
 acc = (100 * correct / total)
@@ -222,12 +222,14 @@ correct = 0
 for _, data in enumerate(testloader,0):
     img0, img1, label = data
     label = label.type(torch.ByteTensor)
+    print label
     img0, img1, label = Variable(img0, volatile = True).cuda(), Variable(img1, volatile = True).cuda(), Variable(label).cuda()
     output1, output2 = net.forward(img0, img1)
     euclidean_distance = F.pairwise_distance(output1, output2)
-    #print euclidean_distance
+    print euclidean_distance
     total += label.size(0)
     pred = (euclidean_distance < thresh)
+    print (label == pred).sum()
     correct += ((label == pred).sum()).type('torch.LongTensor')
 correct = correct.data.numpy().astype(np.float)
 acc = (100 * correct / total)
