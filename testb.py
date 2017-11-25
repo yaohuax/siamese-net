@@ -216,6 +216,7 @@ print correct
 print total
 print('Accuracy of the network on the train images: %f %%' % acc)
 
+thresh = 1.2
 total = 0
 correct = 0
 for _, data in enumerate(testloader,0):
