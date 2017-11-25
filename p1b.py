@@ -44,8 +44,8 @@ def ls(root, mode):
 
 class Config():
     training_dir = "/home/yaohuaxu1/siamese-net/lfw/"
-    batch_size = 16
-    train_number_epochs = 100
+    batch_size = 64
+    train_number_epochs = 45
     
 class LFWDataset(Dataset):
     
@@ -148,7 +148,7 @@ class Net(nn.Module):
         return output1, output2
 
 class ContrastiveLoss(torch.nn.Module):
-    def __init__(self, margin=2.0):
+    def __init__(self, margin=1.0):
         super(ContrastiveLoss, self).__init__()
         self.margin = margin
         
