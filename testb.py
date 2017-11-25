@@ -194,7 +194,7 @@ iteration_number = 0
 #torch.save(net.state_dict(), f='p1b model')
 net.load_state_dict(torch.load(f='p1b model'))
 
-thresh = 0.97
+thresh = 8
 total = 0
 correct = 0
 for _, data in enumerate(trainloader,0):
