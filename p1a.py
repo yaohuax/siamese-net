@@ -180,7 +180,7 @@ def main():
     #Data Loader
     trainloader = DataLoader(lfwDataset, batch_size = Config.batch_size, shuffle = True)
     testloader = DataLoader(testDataset, batch_size = Config.batch_size, shuffle = False)
-    if arg.save:
+    if args.save:
         net = Net().cuda()
         criterion = nn.BCELoss()
         optimizer = optim.Adam(net.parameters(), lr = 0.00001)
@@ -207,7 +207,7 @@ def main():
         #Save Model
         torch.save(net.state_dict(), f=file)
     
-    if arg.load:
+    if args.load:
     #Test
         net.load_state_dict(torch.load(f=file))
 
