@@ -213,6 +213,9 @@ def main():
 
         total = 0
         correct = 0
+        lfwDataset = LFWDataset(root = Config.training_dir, lst = lst, data_augmentation = False,
+                            transform=transforms.Compose([transforms.Scale((128,128)),transforms.ToTensor()]))
+        trainloader = DataLoader(lfwDataset, batch_size = Config.batch_size, shuffle = False)
         for  _, data in enumerate(trainloader,0):
             img0, img1, label = data
             label = label.type(torch.FloatTensor)
