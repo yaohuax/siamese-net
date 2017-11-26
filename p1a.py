@@ -62,7 +62,7 @@ def ls(root, mode):
 class Config():
     training_dir = "/home/yaohuaxu1/siamese-net/lfw/"
     batch_size = 64
-    train_number_epochs = 30
+    train_number_epochs = 1
     
 #Custom Dataset
 class LFWDataset(Dataset):
