@@ -22,6 +22,7 @@ import matplotlib.pyplot as plt
 import torchvision.utils
 import os
 import re
+import argparser
 
 # Helper Functions
 #def imshow(img,text,should_save=False):
@@ -159,89 +160,92 @@ class Net(nn.Module):
         return pred
 
 
-#Using ImageFolder
-lst = ls(Config.training_dir, mode = 'train')
-test_list = ls(Config.training_dir, mode = 'test')
-#print len(test_list)
-lfwDataset = LFWDataset(root = Config.training_dir, lst = lst, data_augmentation = False,
-                        transform=transforms.Compose([transforms.Scale((128,128)),transforms.ToTensor()]))
-testDataset = LFWDataset(root = Config.training_dir, lst = test_list, data_augmentation = False,
-                         transform=transforms.Compose([transforms.Scale((128,128)),transforms.ToTensor()]))
-#print len(lfwDataset)
-#print len(testDataset)
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--load', required=True, action='store_true')
+    parser.add_argument('--save', required=True, action='store_true')
+    parser.add_argument('file', type=str, required=True)
+    args = parser.parse_args()
+    
+    file = args.file
 
-#Data Loader
-trainloader = DataLoader(lfwDataset, batch_size = Config.batch_size, shuffle = True)
-testloader = DataLoader(testDataset, batch_size = Config.batch_size, shuffle = False)
+    lst = ls(Config.training_dir, mode = 'train')
+    test_list = ls(Config.training_dir, mode = 'test')
 
-net = Net().cuda()
-criterion = nn.BCELoss()
-optimizer = optim.Adam(net.parameters(), lr = 0.00001)
-counter = []
-loss_history = []
-iteration_number = 0
-for epoch in range(Config.train_number_epochs):
-    for i, data in enumerate(trainloader, 0):
-        img0, img1, label = data
-        label = label.type(torch.FloatTensor)
-        #print label.size(0)
-        #print type(img0), type(label)
-        img0, img1, label = Variable(img0).cuda(), Variable(img1).cuda(), Variable(label).cuda()
-        #print label.data.shape
-        #print net.forward(img0,img1)
-        output = net.forward(img0, img1)
-        #print output
-        optimizer.zero_grad()
-        
-        #print type(label)
-        loss = criterion(output, label)
-        loss.backward()
-        optimizer.step()
-        if i %10 == 0 :
-            print("Epoch number {}\n Current loss {}\n".format(epoch,loss.data[0]))
-            iteration_number +=10
-            counter.append(iteration_number)
-            loss_history.append(loss.data[0])
-#show_plot(counter,loss_history)
+    lfwDataset = LFWDataset(root = Config.training_dir, lst = lst, data_augmentation = False,
+                            transform=transforms.Compose([transforms.Scale((128,128)),transforms.ToTensor()]))
+    testDataset = LFWDataset(root = Config.training_dir, lst = test_list, data_augmentation = False,
+                             transform=transforms.Compose([transforms.Scale((128,128)),transforms.ToTensor()]))
 
-#Save Model
-torch.save(net.state_dict(), f='p1a model')
+    #Data Loader
+    trainloader = DataLoader(lfwDataset, batch_size = Config.batch_size, shuffle = True)
+    testloader = DataLoader(testDataset, batch_size = Config.batch_size, shuffle = False)
+    if arg.save:
+        net = Net().cuda()
+        criterion = nn.BCELoss()
+        optimizer = optim.Adam(net.parameters(), lr = 0.00001)
+        counter = []
+        loss_history = []
+        iteration_number = 0
+        for epoch in range(Config.train_number_epochs):
+            for i, data in enumerate(trainloader, 0):
+                img0, img1, label = data
+                label = label.type(torch.FloatTensor)
+                img0, img1, label = Variable(img0).cuda(), Variable(img1).cuda(), Variable(label).cuda()
+                output = net.forward(img0, img1)
+                optimizer.zero_grad()
+                loss = criterion(output, label)
+                loss.backward()
+                optimizer.step()
+                if i %10 == 0 :
+                    print("Epoch number {}\n Current loss {}\n".format(epoch,loss.data[0]))
+                    iteration_number +=10
+                    counter.append(iteration_number)
+                    loss_history.append(loss.data[0])
+        #show_plot(counter,loss_history)
 
-#Test
-net.load_state_dict(torch.load(f='p1a model'))
+        #Save Model
+        torch.save(net.state_dict(), f=file)
+    
+    if arg.load:
+    #Test
+        net.load_state_dict(torch.load(f=file))
 
-total = 0
-correct = 0
-for  _, data in enumerate(trainloader,0):
-    img0, img1, label = data
-    label = label.type(torch.FloatTensor)
-    img0, img1, label = Variable(img0, volatile = True).cuda(), Variable(img1, volatile = True).cuda(), Variable(label).cuda()
-    output = net.forward(img0, img1)
-    output = (torch.round(output)).type('torch.LongTensor')
-    label = label.type('torch.LongTensor')
-    total += label.size(0)
-    # print (output == label).sum()
-    correct += ((output == label).sum()).type('torch.LongTensor')
-correct = correct.data.numpy().astype(np.float)
-acc = (100 * correct / total)
-print correct
-print total
-print('Accuracy of the network on the train images: %f %%' % acc)      
+        total = 0
+        correct = 0
+        for  _, data in enumerate(trainloader,0):
+            img0, img1, label = data
+            label = label.type(torch.FloatTensor)
+            img0, img1, label = Variable(img0, volatile = True).cuda(), Variable(img1, volatile = True).cuda(), Variable(label).cuda()
+            output = net.forward(img0, img1)
+            output = (torch.round(output)).type('torch.LongTensor')
+            label = label.type('torch.LongTensor')
+            total += label.size(0)
+            # print (output == label).sum()
+            correct += ((output == label).sum()).type('torch.LongTensor')
+        correct = correct.data.numpy().astype(np.float)
+        acc = (100 * correct / total)
+        print correct
+        print total
+        print('Accuracy of the network on the train images: %f %%' % acc)      
 
-total = 0
-correct = 0
-for _, data in enumerate(testloader,0):
-    img0, img1, label = data
-    label = label.type(torch.FloatTensor)
-    img0, img1, label = Variable(img0, volatile = True).cuda(), Variable(img1, volatile = True).cuda(), Variable(label).cuda()
-    output = net.forward(img0, img1)
-    output = (torch.round(output)).type('torch.LongTensor')
-    label = label.type('torch.LongTensor')
-    total += label.size(0)
-    correct += ((output == label).sum()).type('torch.LongTensor')
-correct = correct.data.numpy().astype(np.float)
-acc = (100 * correct / total)
-print total
-print correct
-print('Accuracy of the network on the train images: %f %%' % acc)     
-         
+        total = 0
+        correct = 0
+        for _, data in enumerate(testloader,0):
+            img0, img1, label = data
+            label = label.type(torch.FloatTensor)
+            img0, img1, label = Variable(img0, volatile = True).cuda(), Variable(img1, volatile = True).cuda(), Variable(label).cuda()
+            output = net.forward(img0, img1)
+            output = (torch.round(output)).type('torch.LongTensor')
+            label = label.type('torch.LongTensor')
+            total += label.size(0)
+            correct += ((output == label).sum()).type('torch.LongTensor')
+        correct = correct.data.numpy().astype(np.float)
+        acc = (100 * correct / total)
+        print total
+        print correct
+        print('Accuracy of the network on the train images: %f %%' % acc)     
+
+if __name__ == '__main__':
+    main()
+             
