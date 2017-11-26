@@ -164,7 +164,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--load', required=True, action='store_true')
     parser.add_argument('--save', required=True, action='store_true')
-    parser.add_argument('file', type=str, required=True)
+    parser.add_argument('file', type=str)
     args = parser.parse_args()
     
     file = args.file
