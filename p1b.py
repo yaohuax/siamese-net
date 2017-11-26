@@ -200,14 +200,15 @@ def main():
         thresh = 0.97
         total = 0
         correct = 0
+        lfwDataset = LFWDataset(root = Config.training_dir, lst = lst, data_augmentation = False,
+                                transform=transforms.Compose([transforms.Scale((128,128)),transforms.ToTensor()]))
+        trainloader = DataLoader(lfwDataset, batch_size = Config.batch_size, shuffle = False)
         for _, data in enumerate(trainloader,0):
             img0, img1, label = data
             label = label.type(torch.ByteTensor)
-            print label
             img0, img1, label = Variable(img0, volatile = True).cuda(), Variable(img1, volatile = True).cuda(), Variable(label).cuda()
             output1, output2 = net.forward(img0, img1)
             euclidean_distance = F.pairwise_distance(output1, output2)
-            print euclidean_distance
             total += label.size(0)
             pred = (euclidean_distance < thresh)
             #print pred
