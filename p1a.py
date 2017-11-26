@@ -180,8 +180,8 @@ def main():
     #Data Loader
     trainloader = DataLoader(lfwDataset, batch_size = Config.batch_size, shuffle = True)
     testloader = DataLoader(testDataset, batch_size = Config.batch_size, shuffle = False)
+    net = Net().cuda()
     if args.save:
-        net = Net().cuda()
         criterion = nn.BCELoss()
         optimizer = optim.Adam(net.parameters(), lr = 0.00001)
         counter = []
