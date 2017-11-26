@@ -44,8 +44,8 @@ def ls(root, mode):
 
 class Config():
     training_dir = "/home/yaohuaxu1/siamese-net/lfw/"
-    batch_size = 16
-    train_number_epochs = 80
+    batch_size = 64
+    train_number_epochs = 100
     
 class LFWDataset(Dataset):
     
@@ -94,18 +94,8 @@ class LFWDataset(Dataset):
     def __len__(self):
         return len(self.lst)
 
-lst = ls(Config.training_dir, mode = 'train')
-test_list = ls(Config.training_dir, mode = 'test')
-#print len(test_list)
-lfwDataset = LFWDataset(root = Config.training_dir, lst = lst, data_augmentation = True,
-                        transform=transforms.Compose([transforms.Scale((128,128)),transforms.ToTensor()]))
-testDataset = LFWDataset(root = Config.training_dir, lst = test_list, data_augmentation = False,
-                         transform=transforms.Compose([transforms.Scale((128,128)),transforms.ToTensor()]))
-#print len(lfwDataset)
-#print len(testDataset)
 
-trainloader = DataLoader(lfwDataset, batch_size = Config.batch_size, shuffle = True)
-testloader = DataLoader(testDataset, batch_size = Config.batch_size, shuffle = False)
+#trainloader = DataLoader(lfwDataset, batch_size = Config.batch_size, shuffle = True)
 
 class Net(nn.Module):
     def __init__(self):
@@ -158,70 +148,93 @@ class ContrastiveLoss(torch.nn.Module):
                                       (1-label) * torch.pow(torch.clamp(self.margin - norm2, min=0.0), 2))
         return loss_contrastive
 
-trainloader = DataLoader(lfwDataset, batch_size = Config.batch_size, shuffle = True)
-net = Net().cuda()
-criterion = ContrastiveLoss()
-optimizer = optim.Adam(net.parameters(), lr = 0.00001)
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--load', action='store_true')
+    parser.add_argument('--save', action='store_true')
+    parser.add_argument('file', type=str)
+    args = parser.parse_args()
+    
+    file = args.file
 
-counter = []
-loss_history = []
-iteration_number = 0
+    lst = ls(Config.training_dir, mode = 'train')
+    test_list = ls(Config.training_dir, mode = 'test')
+    lfwDataset = LFWDataset(root = Config.training_dir, lst = lst, data_augmentation = True,
+                            transform=transforms.Compose([transforms.Scale((128,128)),transforms.ToTensor()]))
+    testDataset = LFWDataset(root = Config.training_dir, lst = test_list, data_augmentation = False,
+                            transform=transforms.Compose([transforms.Scale((128,128)),transforms.ToTensor()]))
+    trainloader = DataLoader(lfwDataset, batch_size = Config.batch_size, shuffle = True)
+    testloader = DataLoader(testDataset, batch_size = Config.batch_size, shuffle = False)
 
-for epoch in range(Config.train_number_epochs):
-    for i, data in enumerate(trainloader, 0):
-        img0, img1, label = data
-        label = label.type(torch.FloatTensor)
-        img0, img1, label = Variable(img0).cuda(), Variable(img1).cuda(), Variable(label).cuda()
-        output1, output2 = net.forward(img0, img1)
-        optimizer.zero_grad()
-        loss = criterion(output1, output2, label)
-        loss.backward()
-        optimizer.step()
-        if i %10 == 0 :
-            print("Epoch number {}\n Current loss {}\n".format(epoch,loss.data[0]))
-            iteration_number +=10
-            counter.append(iteration_number)
-            loss_history.append(loss.data[0])
-            
-torch.save(net.state_dict(), f='p1b model')
-net.load_state_dict(torch.load(f='p1b model'))
+    net = Net().cuda()
+    if args.save:
+        criterion = ContrastiveLoss()
+        optimizer = optim.Adam(net.parameters(), lr = 0.002)
 
-thresh = 0.6
-total = 0
-correct = 0
-for _, data in enumerate(trainloader,0):
-    img0, img1, label = data
-    label = label.type(torch.ByteTensor)
-    print label
-    img0, img1, label = Variable(img0, volatile = True).cuda(), Variable(img1, volatile = True).cuda(), Variable(label).cuda()
-    output1, output2 = net.forward(img0, img1)
-    euclidean_distance = F.pairwise_distance(output1, output2)
-    print euclidean_distance
-    total += label.size(0)
-    pred = (euclidean_distance < thresh)
-    #print pred
-    print (label == pred).sum()
-    correct += ((label == pred).sum()).type('torch.LongTensor')
-correct = correct.data.numpy().astype(np.float)
-acc = (100 * correct / total)
-print correct
-print total
-print('Accuracy of the network on the train images: %f %%' % acc)
+        counter = []
+        loss_history = []
+        iteration_number = 0
 
-total = 0
-correct = 0
-for _, data in enumerate(testloader,0):
-    img0, img1, label = data
-    label = label.type(torch.ByteTensor)
-    img0, img1, label = Variable(img0, volatile = True).cuda(), Variable(img1, volatile = True).cuda(), Variable(label).cuda()
-    output1, output2 = net.forward(img0, img1)
-    euclidean_distance = F.pairwise_distance(output1, output2)
-    #print euclidean_distance
-    total += label.size(0)
-    pred = (euclidean_distance < thresh)
-    correct += ((label == pred).sum()).type('torch.LongTensor')
-correct = correct.data.numpy().astype(np.float)
-acc = (100 * correct / total)
-print correct
-print total
-print('Accuracy of the network on the test images: %f %%' % acc)
+        for epoch in range(Config.train_number_epochs):
+            for i, data in enumerate(trainloader, 0):
+                img0, img1, label = data
+                label = label.type(torch.FloatTensor)
+                img0, img1, label = Variable(img0).cuda(), Variable(img1).cuda(), Variable(label).cuda()
+                output1, output2 = net.forward(img0, img1)
+                optimizer.zero_grad()
+                loss = criterion(output1, output2, label)
+                loss.backward()
+                optimizer.step()
+                if i %10 == 0 :
+                    print("Epoch number {}\n Current loss {}\n".format(epoch,loss.data[0]))
+                    iteration_number +=10
+                    counter.append(iteration_number)
+                    loss_history.append(loss.data[0])
+                    
+        torch.save(net.state_dict(), f='p1b model')
+
+    if args.load:
+        net.load_state_dict(torch.load(f='p1b model'))
+
+        thresh = 0.97
+        total = 0
+        correct = 0
+        for _, data in enumerate(trainloader,0):
+            img0, img1, label = data
+            label = label.type(torch.ByteTensor)
+            print label
+            img0, img1, label = Variable(img0, volatile = True).cuda(), Variable(img1, volatile = True).cuda(), Variable(label).cuda()
+            output1, output2 = net.forward(img0, img1)
+            euclidean_distance = F.pairwise_distance(output1, output2)
+            print euclidean_distance
+            total += label.size(0)
+            pred = (euclidean_distance < thresh)
+            #print pred
+            print (label == pred).sum()
+            correct += ((label == pred).sum()).type('torch.LongTensor')
+        correct = correct.data.numpy().astype(np.float)
+        acc = (100 * correct / total)
+        print correct
+        print total
+        print('Accuracy of the network on the train images: %f %%' % acc)
+
+        total = 0
+        correct = 0
+        for _, data in enumerate(testloader,0):
+            img0, img1, label = data
+            label = label.type(torch.ByteTensor)
+            img0, img1, label = Variable(img0, volatile = True).cuda(), Variable(img1, volatile = True).cuda(), Variable(label).cuda()
+            output1, output2 = net.forward(img0, img1)
+            euclidean_distance = F.pairwise_distance(output1, output2)
+            #print euclidean_distance
+            total += label.size(0)
+            pred = (euclidean_distance < thresh)
+            correct += ((label == pred).sum()).type('torch.LongTensor')
+        correct = correct.data.numpy().astype(np.float)
+        acc = (100 * correct / total)
+        print correct
+        print total
+        print('Accuracy of the network on the test images: %f %%' % acc)
+
+if __name__ == '__main__':
+    main()
