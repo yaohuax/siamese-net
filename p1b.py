@@ -197,7 +197,7 @@ def main():
     if args.load:
         net.load_state_dict(torch.load(f=file))
 
-        thresh = 0.97
+        thresh = 2.1
         total = 0
         correct = 0
         lfwDataset = LFWDataset(root = Config.training_dir, lst = lst, data_augmentation = False,
