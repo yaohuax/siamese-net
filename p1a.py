@@ -22,7 +22,7 @@ import matplotlib.pyplot as plt
 import torchvision.utils
 import os
 import re
-import argparser
+import argparse
 
 # Helper Functions
 #def imshow(img,text,should_save=False):
