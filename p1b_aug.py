@@ -46,7 +46,7 @@ def ls(root, mode):
 class Config():
     training_dir = "/home/yaohuaxu1/siamese-net/lfw/"
     batch_size = 64
-    train_number_epochs = 100
+    train_number_epochs = 40
     
 class LFWDataset(Dataset):
     
@@ -160,7 +160,7 @@ def main():
 
     lst = ls(Config.training_dir, mode = 'train')
     test_list = ls(Config.training_dir, mode = 'test')
-    lfwDataset = LFWDataset(root = Config.training_dir, lst = lst, data_augmentation = True,
+    lfwDataset = LFWDataset(root = Config.training_dir, lst = lst, data_augmentation = False,
                             transform=transforms.Compose([transforms.Scale((128,128)),transforms.ToTensor()]))
     testDataset = LFWDataset(root = Config.training_dir, lst = test_list, data_augmentation = False,
                             transform=transforms.Compose([transforms.Scale((128,128)),transforms.ToTensor()]))
