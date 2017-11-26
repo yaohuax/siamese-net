@@ -192,10 +192,10 @@ def main():
                     counter.append(iteration_number)
                     loss_history.append(loss.data[0])
                     
-        torch.save(net.state_dict(), f='p1b model')
+        torch.save(net.state_dict(), f=file)
 
     if args.load:
-        net.load_state_dict(torch.load(f='p1b model'))
+        net.load_state_dict(torch.load(f=file))
 
         thresh = 0.97
         total = 0
